@@ -28,8 +28,9 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-          kill $(pgrep main) || echo "No existing process found"
+          pm2 delete my-app || echo "No existing process found"
           cd GO.AWS_EC2
           git pull origin test
-          go run main.go &
+          pm2 start go --name "my-app" -- run main.go
+          pm2 save
           echo "Application is running in the background."
